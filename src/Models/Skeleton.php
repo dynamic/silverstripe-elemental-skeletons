@@ -43,7 +43,8 @@ class Skeleton extends DataObject {
 		$classes = array();
 
 		foreach(ClassInfo::subClassesFor($baseClass) as $className) {
-			if (Extensible::has_extension($className, $extension)){
+            $class = $className::singleton();
+			if ($class::has_extension($className, $extension)){
 				$classes[$className] = singleton($className)->singular_name();
 			}
 		}

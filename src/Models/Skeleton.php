@@ -4,12 +4,16 @@ namespace DNADesign\ElementalSkeletons\Models;
 
 use DNADesign\Elemental\Extensions\ElementalAreasExtension;
 
+use LeKoala\CmsActions\CmsInlineFormAction;
+use LeKoala\CmsActions\CustomAction;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Versioned\Versioned;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
 use Page;
@@ -65,14 +69,45 @@ class Skeleton extends DataObject {
 			$gfc->addComponent(new GridFieldOrderableRows('Sort'));
 			$fields->removeByName('Parts');
 			$fields->addFieldToTab('Root.Main', $gf);
-
-			$fields->addFieldToTab('Root.Main', FormAction::create('create', 'Create new ' . $this->Title . ' page')->addExtraClass('btn btn-success font-icon-plus-circled')->setUseButtonTag(true));
 		}
 		return $fields;
 	}
 
-	public function PageTypeName() {
+    /**
+     * @return FieldList
+     */
+    public function getCMSActions(): FieldList
+    {
+        $actions = parent::getCMSActions();
+
+        if ($this->isinDB()) {
+            $actions->push(CustomAction::create('createPage', 'Create new ' . $this->Title . ' page')->addExtraClass('btn btn-success font-icon-plus-circled'));
+        }
+
+        return $actions;
+    }
+
+    public function PageTypeName() {
 		return singleton($this->PageType)->singular_name();
 	}
 
+    public function createPage() {
+        $pageType = $this->PageType;
+
+        $page = $pageType::create();
+        $page->write();
+        $page->writeToStage(Versioned::DRAFT);
+
+        $area = $page->ElementalArea();
+
+        foreach($this->Parts() as $part) {
+            $type = $part->ElementType;
+            $element = $type::create();
+            $element->write();
+            $element->writeToStage(Versioned::DRAFT);
+            $area->Elements()->add($element);
+        }
+
+        return 'Page Added';
+    }
 }

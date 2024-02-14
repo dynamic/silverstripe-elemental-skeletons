@@ -12,6 +12,7 @@
 	"prefer-stable": true,
 	"require": {
 		"dnadesign/silverstripe-elemental": "^5.0",
-        "lekoala/silverstripe-cms-actions": "^1.4"
+        "lekoala/silverstripe-cms-actions": "^1.4",
+        "wedevelopnl/silverstripe-elemental-grid": "^3.0"
 	}
 }

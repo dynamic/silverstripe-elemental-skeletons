@@ -4,13 +4,10 @@ namespace DNADesign\ElementalSkeletons\Models;
 
 use DNADesign\Elemental\Extensions\ElementalAreasExtension;
 
-use LeKoala\CmsActions\CmsInlineFormAction;
 use LeKoala\CmsActions\CustomAction;
 use SilverStripe\Core\ClassInfo;
-use SilverStripe\Core\Extensible;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\Forms\TreeDropdownField;
 use SilverStripe\ORM\DataObject;
@@ -118,6 +115,7 @@ class Skeleton extends DataObject {
         foreach($this->Parts() as $part) {
             $type = $part->ElementType;
             $element = $type::create();
+            $element->Style = $part->Style;
             $element->write();
             $element->writeToStage(Versioned::DRAFT);
             $area->Elements()->add($element);

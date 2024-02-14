@@ -2,9 +2,9 @@
 
 namespace DNADesign\ElementalSkeletons\Models;
 
+use Sheadawson\DependentDropdown\Forms\DependentDropdownField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Forms\DropdownField;
-use DNADesign\Elemental\Extensions\ElementalAreasExtension;
 
 /**
  * Creates a archetype of elements that can be used as a template that is defined
@@ -14,6 +14,7 @@ class SkeletonPart extends DataObject {
 
 	private static $db = array(
 		'ElementType' => 'Varchar',
+        'Style' => 'Varchar',
 		'Sort' => 'Int',
 	);
 
@@ -34,6 +35,8 @@ class SkeletonPart extends DataObject {
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
 
+        $fields->removeByName('Style');
+
 		$pageType = $this->Skeleton()->PageType;
 		$elementTypes = $pageType::singleton()->getElementalTypes();
 
@@ -41,6 +44,14 @@ class SkeletonPart extends DataObject {
 		$fields->removeByName('SkeletonID');
 		$fields->replaceField('ElementType', $et = DropdownField::create('ElementType', 'Which element type', $elementTypes));
 		$et->setEmptyString('Please choose...');
+
+        $styleOptions = function($elementType) {
+            return $elementType::singleton()->config()->get('styles');
+        };
+
+        $styles = DependentDropdownField::create('Style', 'Style', $styleOptions)->setDepends($et);
+        $fields->insertAfter('ElementType', $styles);
+
 		return $fields;
 	}
 

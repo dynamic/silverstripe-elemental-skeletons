@@ -100,6 +100,7 @@ class Skeleton extends DataObject {
 	}
 
     /**
+     * @param $request
      * @return string
      */
     public function createPage($request): string

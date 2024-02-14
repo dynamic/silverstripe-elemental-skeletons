@@ -12,6 +12,7 @@ use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
+use SilverStripe\Forms\TreeDropdownField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Versioned\Versioned;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
@@ -57,6 +58,7 @@ class Skeleton extends DataObject {
 
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
+
 		$pageTypes = self::getDecoratedBy(ElementalAreasExtension::class, Page::class);
 		$fields->removeByName('Sort');
 		$fields->replaceField('PageType', $pt = DropdownField::create('PageType', 'Which page type to use as the base', $pageTypes));
@@ -69,7 +71,10 @@ class Skeleton extends DataObject {
 			$gfc->addComponent(new GridFieldOrderableRows('Sort'));
 			$fields->removeByName('Parts');
 			$fields->addFieldToTab('Root.Main', $gf);
+
+            $fields->push(TreeDropdownField::create('ParentID', 'Parent Page', Page::class)->setEmptyString('Parent page (empty for root)'));
 		}
+
 		return $fields;
 	}
 
@@ -81,7 +86,10 @@ class Skeleton extends DataObject {
         $actions = parent::getCMSActions();
 
         if ($this->isinDB()) {
-            $actions->push(CustomAction::create('createPage', 'Create new ' . $this->Title . ' page')->addExtraClass('btn btn-success font-icon-plus-circled'));
+            $actions->push(
+                CustomAction::create('createPage', 'Create new ' . $this->Title . ' page')
+                    ->addExtraClass('btn btn-success font-icon-plus-circled')
+            );
         }
 
         return $actions;
@@ -91,10 +99,16 @@ class Skeleton extends DataObject {
 		return singleton($this->PageType)->singular_name();
 	}
 
-    public function createPage() {
+    /**
+     * @return string
+     */
+    public function createPage($request): string
+    {
         $pageType = $this->PageType;
+        $parentID = $request['ParentID'] ?? 0;
 
         $page = $pageType::create();
+        $page->ParentID = $parentID;
         $page->write();
         $page->writeToStage(Versioned::DRAFT);
 

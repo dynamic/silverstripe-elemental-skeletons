@@ -17,7 +17,7 @@ class BaseElementDataExtension extends DataExtension
         $owner = $this->getOwner();
 
         $relationName = $owner->getAreaRelationName();
-        $page = $owner->getPage();
+        $page = $this->getOwnerPage();
 
         if (!$page) {
             return;
@@ -47,5 +47,41 @@ class BaseElementDataExtension extends DataExtension
             $link,
             'edit'
         );
+    }
+
+    /**
+     * @return void
+     */
+    public function onBeforeWrite(): void
+    {
+        parent::onBeforeWrite();
+
+        $manager = $this->getOwnerPage();
+
+        if($manager instanceof Skeleton) {
+            $populate = Skeleton::config()->get('populate');
+
+            if(array_key_exists($this->getOwner()->ClassName, $populate)) {
+                foreach($populate[$this->getOwner()->ClassName] as $field => $value) {
+                    $this->getOwner()->$field = $value;
+                }
+            }
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function onAfterWrite(): void
+    {
+        parent::onAfterWrite();
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getOwnerPage(): mixed
+    {
+        return $this->getOwner()->getPage();
     }
 }

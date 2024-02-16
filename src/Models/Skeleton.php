@@ -16,6 +16,12 @@ use SilverStripe\Versioned\Versioned;
 
 /**
  * Creates a Skeleton of elements that can be used to set up a page
+ *
+ * @property string $Title
+ * @property string $PageType
+ * @property int $ElementsID
+ * @method \DNADesign\Elemental\Models\ElementalArea Elements()
+ * @mixin \DNADesign\Elemental\Extensions\ElementalAreasExtension
  */
 class Skeleton extends DataObject
 {

@@ -7,6 +7,11 @@ use SilverStripe\CMS\Controllers\CMSPageEditController;
 use SilverStripe\Control\Controller;
 use SilverStripe\ORM\DataExtension;
 
+/**
+ * Class \DNADesign\ElementalSkeletons\Extension\BaseElementDataExtension
+ *
+ * @property \DNADesign\Elemental\Models\BaseElement|\DNADesign\ElementalSkeletons\Extension\BaseElementDataExtension $owner
+ */
 class BaseElementDataExtension extends DataExtension
 {
     /**

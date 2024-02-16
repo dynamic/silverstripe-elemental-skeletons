@@ -6,7 +6,8 @@ use DNADesign\ElementalSkeletons\Models\Skeleton;
 use SilverStripe\Admin\ModelAdmin;
 
 /**
- * @package elemental
+ * Class \DNADesign\ElementalArchetypes\Admin\SkeletonAdmin
+ *
  */
 class SkeletonAdmin extends ModelAdmin
 {

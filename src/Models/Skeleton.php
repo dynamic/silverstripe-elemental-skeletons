@@ -19,8 +19,10 @@ use SilverStripe\Versioned\Versioned;
  */
 class Skeleton extends DataObject
 {
-
-    private static $db = [
+    /**
+     * @var array|string[]
+     */
+    private static array $db = [
         'Title' => 'Varchar',
         'PageType' => 'Varchar',
     ];
@@ -65,16 +67,28 @@ class Skeleton extends DataObject
         ElementalAreasExtension::class,
     ];
 
-    private static $summary_fields = [
+    /**
+     * @var array|string[]
+     */
+    private static array $summary_fields = [
         'Title',
         'PageTypeName',
     ];
 
-    private static $field_labels = [
+    /**
+     * @var array|string[]
+     */
+    private static array $field_labels = [
         'PageTypeName' => 'Page Type',
     ];
 
-    public static function getDecoratedBy($extension, $baseClass)
+    /**
+     * @param $extension
+     * @param $baseClass
+     * @return array
+     * @throws \ReflectionException
+     */
+    public static function getDecoratedBy($extension, $baseClass): array
     {
         $classes = [];
 
@@ -89,6 +103,7 @@ class Skeleton extends DataObject
 
     /**
      * @return FieldList
+     * @throws \ReflectionException
      */
     public function getCMSFields(): FieldList
     {
@@ -127,7 +142,10 @@ class Skeleton extends DataObject
         return $actions;
     }
 
-    public function PageTypeName()
+    /**
+     * @return string
+     */
+    public function PageTypeName(): string
     {
         return singleton($this->PageType)->singular_name();
     }
@@ -143,7 +161,7 @@ class Skeleton extends DataObject
 
         $page = $pageType::create();
         $page->ParentID = $parentID;
-        if($request['PageTitle']) {
+        if ($request['PageTitle']) {
             $page->Title = $request['PageTitle'];
         }
         $page->write();

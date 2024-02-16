@@ -10,9 +10,10 @@ use SilverStripe\ORM\DataExtension;
 class BaseElementDataExtension extends DataExtension
 {
     /**
-     * @param string $link
+     * @param string|null $link
+     * @return void
      */
-    public function updateCMSEditLink(&$link)
+    public function updateCMSEditLink(string &$link = null): void
     {
         $owner = $this->getOwner();
 
@@ -58,11 +59,11 @@ class BaseElementDataExtension extends DataExtension
 
         $manager = $this->getOwnerPage();
 
-        if($manager instanceof Skeleton) {
+        if ($manager instanceof Skeleton) {
             $populate = Skeleton::config()->get('populate');
 
-            if(array_key_exists($this->getOwner()->ClassName, $populate)) {
-                foreach($populate[$this->getOwner()->ClassName] as $field => $value) {
+            if (array_key_exists($this->getOwner()->ClassName, $populate)) {
+                foreach ($populate[$this->getOwner()->ClassName] as $field => $value) {
                     $this->getOwner()->$field = $value;
                 }
             }

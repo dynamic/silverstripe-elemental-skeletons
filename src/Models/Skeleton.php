@@ -12,6 +12,9 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\TreeDropdownField;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Member;
+use SilverStripe\Security\PermissionProvider;
+use SilverStripe\Security\Security;
 use SilverStripe\Versioned\Versioned;
 
 /**
@@ -23,7 +26,7 @@ use SilverStripe\Versioned\Versioned;
  * @method \DNADesign\Elemental\Models\ElementalArea Elements()
  * @mixin \DNADesign\Elemental\Extensions\ElementalAreasExtension
  */
-class Skeleton extends DataObject
+class Skeleton extends DataObject implements PermissionProvider
 {
     /**
      * @var array|string[]
@@ -219,5 +222,95 @@ class Skeleton extends DataObject
         }
 
         return 'Elements';
+    }
+
+    /**
+     * @return array[]
+     */
+    public function providePermissions(): array
+    {
+        return [
+            'ELEMENTAL_SKELETONS_CREATE' => [
+                'name' => 'Create a skeleton',
+                'category' => 'Elemental Skeletons',
+            ],
+            'ELEMENTAL_SKELETONS_EDIT' => [
+                'name' => 'Edit a skeleton',
+                'category' => 'Elemental Skeletons',
+            ],
+            'ELEMENTAL_SKELETONS_DELETE' => [
+                'name' => 'Delete a skeleton',
+                'category' => 'Elemental Skeletons',
+            ],
+        ];
+    }
+
+    /**
+     * @param $member
+     * @param $context
+     * @return bool
+     */
+    public function canCreate($member = null, $context = []): bool
+    {
+        if ($member === null) {
+            $member = $this->getUser();
+        }
+
+        if ($member->can('ELEMENTAL_SKELETONS_CREATE')) {
+            return true;
+        }
+
+        return parent::canCreate($member, $context);
+    }
+
+    /**
+     * @param $member
+     * @return bool
+     */
+    public function canEdit($member = null): bool
+    {
+        if ($member === null) {
+            $member = $this->getUser();
+        }
+
+        if ($member->can('ELEMENTAL_SKELETONS_EDIT')) {
+            return true;
+        }
+
+        return parent::canEdit($member);
+    }
+
+    /**
+     * @param $member
+     * @return bool
+     */
+    public function canDelete($member = null): bool
+    {
+        if ($member === null) {
+            $member = $this->getUser();
+        }
+
+        if ($member->can('ELEMENTAL_SKELETONS_DELETE')) {
+            return true;
+        }
+
+        return parent::canDelete($member);
+    }
+
+    /**
+     * @param $member
+     * @return bool
+     */
+    public function canView($member = null): bool
+    {
+        return true;
+    }
+
+    /**
+     * @return Member|null
+     */
+    protected function getUser(): ?Member
+    {
+        return Security::getCurrentUser();
     }
 }

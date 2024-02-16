@@ -6,6 +6,8 @@ use DNADesign\ElementalSkeletons\Models\Skeleton;
 use SilverStripe\CMS\Controllers\CMSPageEditController;
 use SilverStripe\Control\Controller;
 use SilverStripe\ORM\DataExtension;
+use SilverStripe\Security\Member;
+use SilverStripe\Security\Security;
 
 /**
  * Class \DNADesign\ElementalSkeletons\Extension\BaseElementDataExtension
@@ -89,5 +91,70 @@ class BaseElementDataExtension extends DataExtension
     protected function getOwnerPage(): mixed
     {
         return $this->getOwner()->getPage();
+    }
+
+    /**
+     * @param $member
+     * @return true|void
+     */
+    public function canCreate($member)
+    {
+        if (!$member instanceof Member) {
+            $member = $this->getCurrentUser();
+        }
+
+        if ($ownerPage = $this->getOwnerPage()) {
+            if ($ownerPage->canCreate($member)) {
+                return true;
+            }
+        }
+
+        parent::canCreate($member);
+    }
+
+    /**
+     * @param $member
+     * @return true|void
+     */
+    public function canEdit($member)
+    {
+        if (!$member instanceof Member) {
+            $member = $this->getCurrentUser();
+        }
+
+        if ($ownerPage = $this->getOwnerPage()) {
+            if ($ownerPage->canEdit($member)) {
+                return true;
+            }
+        }
+
+        parent::canEdit($member);
+    }
+
+    /**
+     * @param $member
+     * @return true|void
+     */
+    public function canDelete($member)
+    {
+        if (!$member instanceof Member) {
+            $member = $this->getCurrentUser();
+        }
+
+        if ($ownerPage = $this->getOwnerPage()) {
+            if ($ownerPage->canDelete($member)) {
+                return true;
+            }
+        }
+
+        parent::canDelete($member);
+    }
+
+    /**
+     * @return Member|null
+     */
+    protected function getCurrentUser(): ?Member
+    {
+        return Security::getCurrentUser();
     }
 }

@@ -94,7 +94,7 @@ class Skeleton extends DataObject
     {
         $fields = parent::getCMSFields();
 
-        $pageTypes = self::getDecoratedBy(ElementalAreasExtension::class, Page::class);
+        $pageTypes = self::getDecoratedBy(ElementalAreasExtension::class, \Page::class);
 
         $fields->removeByName('Sort');
         $fields->replaceField('PageType', $pt = DropdownField::create('PageType', 'Which page type to use as the base', $pageTypes));
@@ -103,7 +103,7 @@ class Skeleton extends DataObject
         $pt->setRightTitle('This will determine which elements are possible to add to the skeleton');
 
         if ($this->isinDB()) {
-            $fields->push(TreeDropdownField::create('ParentID', 'Parent Page', Page::class)->setEmptyString('Parent page (empty for root)'));
+            $fields->push(TreeDropdownField::create('ParentID', 'Parent Page', \Page::class)->setEmptyString('Parent page (empty for root)'));
             $fields->push(TextField::create('PageTitle', 'Page Title')->setDescription('Title for new page'));
         }
 

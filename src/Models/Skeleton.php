@@ -3,7 +3,6 @@
 namespace DNADesign\ElementalSkeletons\Models;
 
 use DNADesign\Elemental\Extensions\ElementalAreasExtension;
-
 use DNADesign\Elemental\Models\ElementalArea;
 use LeKoala\CmsActions\CustomAction;
 use SilverStripe\Control\Controller;
@@ -15,10 +14,8 @@ use SilverStripe\Forms\TreeDropdownField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Versioned\Versioned;
 
-use Page;
-
 /**
- * Creates a Skeleton of elements that can be used to setup a page
+ * Creates a Skeleton of elements that can be used to set up a page
  */
 class Skeleton extends DataObject
 {

@@ -20,4 +20,6 @@ class SkeletonAdmin extends ModelAdmin {
     private static $menu_title = 'Element Skeletons';
 
     private static $url_segment = 'elemental-skeletons';
+
+    private static $menu_icon_class = 'font-icon-block-layout';
 }

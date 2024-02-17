@@ -5,6 +5,7 @@ namespace DNADesign\ElementalSkeletons\Models;
 use DNADesign\Elemental\Extensions\ElementalAreasExtension;
 use DNADesign\Elemental\Models\ElementalArea;
 use LeKoala\CmsActions\CustomAction;
+use SilverStripe\Assets\Image;
 use SilverStripe\Control\Controller;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Forms\DropdownField;
@@ -23,11 +24,28 @@ use SilverStripe\Versioned\Versioned;
  * @property string $Title
  * @property string $PageType
  * @property int $ElementsID
+ * @property int $LayoutImageID
  * @method \DNADesign\Elemental\Models\ElementalArea Elements()
+ * @method \SilverStripe\Assets\Image LayoutImage()
  * @mixin \DNADesign\Elemental\Extensions\ElementalAreasExtension
  */
 class Skeleton extends DataObject implements PermissionProvider
 {
+    /**
+     * @var string
+     */
+    private static string $table_name = 'ElementSkeletons';
+
+    /**
+     * @var string
+     */
+    private static string $singular_name = 'Skeleton';
+
+    /**
+     * @var string
+     */
+    private static string $plural_name = 'Skeletons';
+
     /**
      * @var array|string[]
      */
@@ -37,15 +55,11 @@ class Skeleton extends DataObject implements PermissionProvider
     ];
 
     /**
-     * @var string
-     */
-    private static string $table_name = 'ElementSkeletons';
-
-    /**
      * @var array|string[]
      */
     private static array $has_one = [
         'Elements' => ElementalArea::class,
+        'LayoutImage' => Image::class,
     ];
 
     /**
@@ -80,8 +94,9 @@ class Skeleton extends DataObject implements PermissionProvider
      * @var array|string[]
      */
     private static array $summary_fields = [
-        'Title',
-        'PageTypeName',
+        'Title' => 'Layout Name',
+        'LayoutImage.CMSThumbnail' => 'Preview Image',
+        'PageTypeName' => 'Page Type',
     ];
 
     /**
@@ -130,6 +145,10 @@ class Skeleton extends DataObject implements PermissionProvider
             $fields->push(TreeDropdownField::create('ParentID', 'Parent Page', \Page::class)->setEmptyString('Parent page (empty for root)'));
             $fields->push(TextField::create('PageTitle', 'Page Title')->setDescription('Title for new page'));
         }
+
+        $fields->dataFieldByName('LayoutImage')
+            ->setFolderName('Uploads/Skeletons')
+            ->setAllowedFileCategories('image');
 
         return $fields;
     }
